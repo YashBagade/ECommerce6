@@ -1,0 +1,16 @@
+﻿using Core.Entitties;
+using Microsoft.EntityFrameworkCore;
+
+
+namespace Infrastructure.DataContext
+{
+    public class StoreContext :DbContext
+    {
+        public StoreContext(DbContextOptions options):base(options) 
+        {
+            
+        }
+
+        public DbSet<Product> Products { get; set; }
+    }
+}
