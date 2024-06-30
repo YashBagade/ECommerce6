@@ -1,5 +1,7 @@
 ﻿using Core.Entitties;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Reflection;
 
 
 namespace Infrastructure.DataContext
@@ -12,5 +14,14 @@ namespace Infrastructure.DataContext
         }
 
         public DbSet<Product> Products { get; set; }
+
+        public DbSet<ProductType> ProductTypes { get; set; }
+
+        public DbSet<ProductBrand> ProductBrands { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>().Property(e => e.Price).HasPrecision(18,4);
+        }
     }
 }

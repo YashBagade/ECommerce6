@@ -1,5 +1,7 @@
+using Core.Interfaces;
 using Infrastructure.DataContext;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args); 
 
@@ -13,6 +15,9 @@ builder.Services.AddDbContext<StoreContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServerConnection"));
 });
+
+// add classes for DI like below
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 ConfigurationManager configuration = builder.Configuration;
@@ -30,7 +35,23 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-//app.MapGet("/", () => $"Worker Process Name : {System.Diagnostics.Process.GetCurrentProcess().ProcessName}");
+// .net core app runs inside a process and you can check which process like below if u select kestrel server.
+//app.MapGet("/", () => $"Worker Process Name : {System.Diagnostics.Process.GetCurrentProcess().ProcessName}"); 
 //End:MiddleWare configuration section
+
+//using var scope = app.Services.CreateScope();
+//var services = scope.ServiceProvider;
+//var context = services.GetRequiredService<StoreContext>();
+//var logger = services.GetRequiredService<ILogger<Program>>();
+
+//try
+//{
+//    await context.Database.MigrateAsync();
+//}
+//catch (Exception ex)
+//{
+
+//    logger.LogError(ex, "An Error occurreed during migration");
+//}
 
 app.Run();

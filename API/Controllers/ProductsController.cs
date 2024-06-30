@@ -1,8 +1,7 @@
 ﻿
 using Core.Entitties;
-using Infrastructure.DataContext;
+using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceApp.Controllers
 {
@@ -10,18 +9,18 @@ namespace ECommerceApp.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private StoreContext _context;
-        public ProductsController(StoreContext context) // Dependency Injection. So this service must be registered in the Program.cs file.
+        private IProductRepository _productRepository;
+        public ProductsController(IProductRepository productRepository) // Dependency Injection. So this service must be registered in the Program.cs file.
         {
-            _context = context;
+            _productRepository = productRepository;
         }
 
         [HttpGet]
         [Route("fetchproducts")]
         //url : api/products
-        public async Task<List<Product>> GetProducts()
+        public async Task<List<Product>?> GetProducts()
         {
-            return await _context.Products.ToListAsync();
+            return await _productRepository.GetProductsAsync() as List<Product>;
         }
 
         [HttpGet("{id}")]
@@ -31,9 +30,27 @@ namespace ECommerceApp.Controllers
             var response = new Product();
             if (id > 0)
             {
-                response = await _context.Products.FindAsync(id);
+                response = await _productRepository.GetProductByIdAsync(id);
             }
             return response;
+        }
+
+        [HttpGet]
+        public async Task<bool> SeedData()
+        {
+           return await _productRepository.SeedData();
+        }
+
+        [HttpGet("fetchBrands")]
+        public async Task<IReadOnlyList<ProductBrand>> GetAllBrands()
+        {
+            return await _productRepository.GetAllBrands();
+        }
+
+        [HttpGet("fetchTypes")]
+        public async Task<IReadOnlyList<ProductType>> GetAllTypes()
+        {
+            return await _productRepository.GetAllTypes();
         }
     }
 }
