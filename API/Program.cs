@@ -18,6 +18,9 @@ builder.Services.AddDbContext<StoreContext>(options =>
 
 // add classes for DI like below
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+// Generic classes sathi you have to do like following
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 ConfigurationManager configuration = builder.Configuration;
@@ -32,6 +35,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
 app.UseAuthorization();
 
 app.MapControllers();

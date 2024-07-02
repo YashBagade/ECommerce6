@@ -1,6 +1,8 @@
 ﻿
+using AutoMapper;
 using Core.Entitties;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceApp.Controllers
@@ -10,27 +12,46 @@ namespace ECommerceApp.Controllers
     public class ProductsController : ControllerBase
     {
         private IProductRepository _productRepository;
-        public ProductsController(IProductRepository productRepository) // Dependency Injection. So this service must be registered in the Program.cs file.
+        private readonly IGenericRepository<Product> _prodRepo;
+        private readonly IGenericRepository<ProductBrand> _prodBrandRepo;
+        private readonly IGenericRepository<ProductType> _prodTypeRepo;
+        private readonly IMapper _mapper;
+
+        // Dependency Injection. So this service must be registered in the Program.cs class.
+        public ProductsController(IProductRepository productRepository,
+            IGenericRepository<Product> prodGenRepo, IGenericRepository<ProductBrand> prodBrandRepo,
+            IGenericRepository<ProductType> prodTypeRepo, IMapper mapper) 
         {
             _productRepository = productRepository;
+            _prodRepo = prodGenRepo;
+            _prodBrandRepo = prodBrandRepo;
+            _prodTypeRepo = prodTypeRepo;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [Route("fetchproducts")]
-        //url : api/products
-        public async Task<List<Product>?> GetProducts()
+        public async Task<List<ProductDto>?> GetProducts()
         {
-            return await _productRepository.GetProductsAsync() as List<Product>;
+            var spec = new ProductWithTypeAndBrandSpecification();
+             var products =  await _prodRepo.GetListWithSpec(spec) as List<Product>;
+            if (products.Any())
+                return _mapper.Map<List<Product>, List<ProductDto>>(products);
+            return new List<ProductDto>();
         }
 
         [HttpGet("{id}")]
-        //url : api/products/12
-        public async Task<Product> GetProduct(long id)
+        public async Task<ProductDto?> GetProduct(long id)
         {
-            var response = new Product();
+            var response = new ProductDto();
             if (id > 0)
             {
-                response = await _productRepository.GetProductByIdAsync(id);
+                var spec = new ProductWithTypeAndBrandSpecification(id);
+                var result =  await _prodRepo.GetEntityWithSpec(spec);
+                if (result != null)
+                {
+                    response = _mapper.Map<Product, ProductDto>(result);
+                }
             }
             return response;
         }
@@ -44,13 +65,13 @@ namespace ECommerceApp.Controllers
         [HttpGet("fetchBrands")]
         public async Task<IReadOnlyList<ProductBrand>> GetAllBrands()
         {
-            return await _productRepository.GetAllBrands();
+            return await _prodBrandRepo.GetAllListAsync();
         }
 
         [HttpGet("fetchTypes")]
         public async Task<IReadOnlyList<ProductType>> GetAllTypes()
         {
-            return await _productRepository.GetAllTypes();
+            return await _prodTypeRepo.GetAllListAsync();
         }
     }
 }

@@ -11,6 +11,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Core\Core.csproj
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{7488F721-5D9F-4ACC-B8C1-07B5818A0A44}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DTOs", "DTOs", "{E045F1C7-E300-47E4-BC3E-87C11035495E}"
+	ProjectSection(SolutionItems) = preProject
+		ProductDto.cs = ProductDto.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helpers", "Helpers", "{C9C872C8-156C-4C1F-BFA6-E832B3773B8C}"
+	ProjectSection(SolutionItems) = preProject
+		Class1.cs = Class1.cs
+		MappingProfiles.cs = MappingProfiles.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +46,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FD284BCC-442F-4E3B-AD19-E412DD086748} = {7488F721-5D9F-4ACC-B8C1-07B5818A0A44}
+		{E045F1C7-E300-47E4-BC3E-87C11035495E} = {7488F721-5D9F-4ACC-B8C1-07B5818A0A44}
+		{C9C872C8-156C-4C1F-BFA6-E832B3773B8C} = {7488F721-5D9F-4ACC-B8C1-07B5818A0A44}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3B65F553-DAE8-4287-9D85-980A8EAC88E1}
